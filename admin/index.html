@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G.Family Care — Admin Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #022c22, #047857);
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 25px 60px rgba(0,0,0,.25);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #064e3b;
+      margin: 10px 0 5px;
+      font-size: 25px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #374151;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #047857;
+      box-shadow: 0 0 0 3px rgba(4,120,87,.12);
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      padding: 14px;
+      border-radius: 10px;
+      background: #047857;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #065f46;
+    }
+
+    .links {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .links a {
+      display: block;
+      color: #047857;
+      text-decoration: none;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    #message {
+      display: none;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .back a {
+      color: #6b7280;
+      font-size: 13px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <div class="logo">
+      <img
+        src="https://i.ibb.co/W4kqSD8C/Whats-App-Image-2026-09-05-at-18-53-12-1.jpg"
+        alt="G.Family Care Services Logo">
+    </div>
+
+    <h1>Administrator Login</h1>
+
+    <p class="subtitle">
+      G.Family Home Care Services
+    </p>
+
+    <div id="message"></div>
+
+    <form id="loginForm">
+
+      <label for="username">Username</label>
+      <input
+        id="username"
+        name="username"
+        type="text"
+        autocomplete="username"
+        required>
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        required>
+
+      <button type="submit">
+        Sign In
+      </button>
+
+    </form>
+
+    <div class="links">
+      <a href="forgot-username.html">Forgot username?</a>
+      <a href="forgot-password.html">Forgot password?</a>
+    </div>
+
+    <div class="back">
+      <a href="/">← Back to G.Family website</a>
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const message = document.getElementById("message");
+
+      message.style.display = "block";
+      message.style.background = "#fef3c7";
+      message.style.color = "#92400e";
+      message.textContent = "Signing in...";
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch("/.netlify/functions/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username,
+            password
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          window.location.href = "/admin/dashboard.html";
+          return;
+        }
+
+        message.style.background = "#fee2e2";
+        message.style.color = "#991b1b";
+        message.textContent = result.message || "Invalid username or password.";
+
+      } catch (error) {
+        message.style.background = "#fee2e2";
+        message.style.color = "#991b1b";
+        message.textContent =
+          "The login service is not configured yet. We will set it up in the next steps.";
+      }
+    });
+  </script>
+
+</body>
+</html>
