@@ -18,8 +18,8 @@ async function hmac(secret, value) {
   const key = await crypto.subtle.importKey("raw", enc.encode(secret), {name:"HMAC", hash:"SHA-256"}, false, ["sign","verify"]);
   return new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(value)));
 }
-async function makeSession(email, secret) {
-  const payload = b64url(enc.encode(JSON.stringify({email, exp:Date.now()+8*60*60*1000})));
+async function makeSession(email, secret, maxAgeSeconds) {
+  const payload = b64url(enc.encode(JSON.stringify({email, exp:Date.now()+maxAgeSeconds*1000})));
   const sig = b64url(await hmac(secret, payload));
   return payload + "." + sig;
 }
@@ -89,8 +89,9 @@ export async function onRequest(context) {
     if(email!==adminEmail || !validPassword){
       return json({error:"Incorrect email or password."},401);
     }
-    const token=await makeSession(adminEmail,secret);
-    return json({ok:true},{headers:{"Set-Cookie":cookie(token,8*60*60)}})
+    const maxAge = body.remember === true ? 30*24*60*60 : 8*60*60;
+    const token=await makeSession(adminEmail,secret,maxAge);
+    return json({ok:true,remember:body.remember===true},200,{"Set-Cookie":cookie(token,maxAge)});
   }
 
   if(action==="me"){
@@ -100,7 +101,7 @@ export async function onRequest(context) {
   }
 
   if(action==="logout"){
-    return json({ok:true},{headers:{"Set-Cookie":cookie("",0)}})
+    return json({ok:true},200,{"Set-Cookie":cookie("",0)});
   }
 
   return json({error:"Unknown action."},404);
