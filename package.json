@@ -1,9 +1,0 @@
-{
-  "name": "gfamilycare-admin",
-  "private": true,
-  "version": "1.0.0",
-  "description": "G.Family Home Care Services website with secure Netlify admin authentication",
-  "dependencies": {
-    "@netlify/blobs": "^10.0.7"
-  }
-}
