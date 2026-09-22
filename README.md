@@ -1,4 +1,4 @@
-# G.Family Home Care Services
+# L&F Medical Clinic
 
 Static site (HTML/CSS/JS) with a Cloudflare Pages Function handling administrator
 authentication. Cloudflare only — no Netlify.
