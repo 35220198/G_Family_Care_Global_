@@ -83,7 +83,7 @@
 
             const data = new FormData(form);
             const lines = [
-                'Hello G.Family Care, I would like to request a free care consultation.',
+                'Hello L&F Medical Clinic, I would like to request a free care consultation.',
                 '',
                 `Name: ${data.get('full_name') || ''}`,
                 `Phone: ${data.get('phone') || ''}`,
