@@ -1,26 +1,43 @@
-# G.Family Care — Cloudflare Pages version
+# G.Family Home Care Services
 
-This cleaned project keeps the supplied website content and separates the front-end into HTML, CSS and JavaScript. The old Netlify authentication calls were replaced with a Cloudflare Pages Function at `/api/auth`.
+Static site (HTML/CSS/JS) with a Cloudflare Pages Function handling administrator
+authentication. Cloudflare only — no Netlify.
 
-## Deploy to Cloudflare Pages
-- Connect the GitHub repository.
-- Production branch: `main`.
-- Build command: `exit 0` (or leave blank if the dashboard accepts it).
-- Build output directory: `.`
-- Root directory: `/`.
-- Do not upload `node_modules`.
+## Structure
+    index.html              public website
+    css/style.css           public styles
+    css/admin.css           admin design system (animated green gradient)
+    js/main.js              public site behaviour
+    js/admin-sparkle.js     star burst effect
+    js/admin-login.js       login + remember me
+    js/admin-dashboard.js   session check + logout
+    admin/index.html        administrator login
+    admin/dashboard.html    protected dashboard
+    admin/reset.html        password change instructions
+    functions/api/auth.js   Cloudflare Pages Function (login / me / logout)
+    tools/password-hash.html  PBKDF2 hash generator
 
-## Activate admin login — simple method
-In Cloudflare Pages go to **Settings → Variables and Secrets** and add:
-- `ADMIN_EMAIL` = your administrator email (for example `info@gfamilycare.com`)
-- `ADMIN_PASSWORD` = your chosen strong password
-- `ADMIN_SESSION_SECRET` = a long random secret, at least 32 characters
+## Deploy (Cloudflare Pages, Git integration)
+Direct Upload / drag-and-drop does NOT compile the functions/ folder, so the
+login would never work that way. Connect the GitHub repository instead.
 
-Save them for **Production** and redeploy.
+    Framework preset        None
+    Build command           (leave empty)
+    Build output directory  /
+    Production branch       main
 
-The password is stored as a Cloudflare secret, not in the HTML/JS. For stronger credential storage you can instead generate a PBKDF2 hash with `tools/password-hash.html` and use `ADMIN_PASSWORD_HASH` instead of `ADMIN_PASSWORD`.
+## Required variables
+Settings -> Variables and secrets -> Production:
 
-Admin login: `/admin/`.
+    ADMIN_EMAIL             the administrator email address
+    ADMIN_SESSION_SECRET    long random string, 40+ characters
+    ADMIN_PASSWORD          the administrator password
+      (or ADMIN_PASSWORD_HASH from tools/password-hash.html, which takes priority)
 
-## Important
-The old ZIP used Netlify Functions/Blobs. This version removes those Netlify calls and uses a Cloudflare Pages Function. Password-reset email is not enabled yet; the reset page explains the current setup. It can be added later with a Cloudflare-compatible email/token store.
+Add variables, then Deployments -> Retry deployment.
+
+## Sessions
+    Remember me off   8 hours
+    Remember me on    30 days
+The cookie is HttpOnly, Secure, SameSite=Lax and signed with HMAC-SHA256.
+Only the email address is stored in the browser, never the password.
