@@ -1,4 +1,4 @@
-/* G.Family Care — administrator dashboard */
+/* L&F Medical Clinic — administrator dashboard */
 document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
