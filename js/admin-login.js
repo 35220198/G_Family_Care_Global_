@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var submit = document.getElementById('submit');
   var toggle = document.getElementById('show');
 
-  var STORE_KEY = 'lfclinic_remember_email';
+  var STORE_KEY = 'gfamily_remember_email';
 
   /* ---- restore a remembered email ---- */
   try {
