@@ -1,4 +1,4 @@
-/* G.Family Care — star / sparkle burst effect
+/* L&F Medical Clinic — star / sparkle burst effect
    Usage: burstStars(clientX, clientY) or window.GFSparkle.burstFrom(element)
    Attaches automatically to any element carrying data-sparkle. */
 (function () {
