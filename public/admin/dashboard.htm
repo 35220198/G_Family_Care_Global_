@@ -1,1 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>G.Family Care — Administrator Dashboard</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-shell">
 
+<!-- Hides the page until the session is confirmed server-side -->
+<div class="gate" id="gate">
+  <div>
+    <div class="spinner"></div>
+    Verifying your session…
+  </div>
+</div>
+
+<main class="glass panel-card">
+
+  <div class="panel-head">
+    <div class="shield sm"><i class="fas fa-shield-halved"></i></div>
+    <div class="titles">
+      <p class="eyebrow">Secure dashboard</p>
+      <h1>Welcome, Administrator</h1>
+      <span class="account-chip"><i class="fas fa-user-lock"></i><span id="email">—</span></span>
+    </div>
+    <button id="logout" class="logout" data-sparkle data-sparkle-count="18">
+      <i class="fas fa-right-from-bracket"></i> Log out
+    </button>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon green-icon"><i class="fas fa-globe"></i></div>
+      <h2>Website</h2>
+      <p>The public G.Family Care website is online and serving visitors.</p>
+      <a class="card-link" href="/" data-sparkle>View live site <i class="fas fa-arrow-up-right-from-square"></i></a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon amber-icon"><i class="fas fa-lock"></i></div>
+      <h2>Account security</h2>
+      <p>Your password is verified server-side. It is never stored in the website files.</p>
+      <a class="card-link" href="/admin/reset.html" data-sparkle>Change password <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon blue-icon"><i class="fas fa-server"></i></div>
+      <h2>Cloudflare backend</h2>
+      <p>Authentication runs on a Cloudflare Pages Function at <strong>/api/auth</strong>.</p>
+      <span class="pill ok" style="margin-top:16px"><span class="dot"></span> Connected</span>
+    </div>
+  </div>
+
+  <section class="card admin-section">
+    <h2>Coming next</h2>
+    <p class="muted">This area is ready for the management tools we add later.</p>
+    <ul>
+      <li>Enquiry and contact-form management</li>
+      <li>Visitor analytics</li>
+      <li>Additional staff accounts with roles</li>
+      <li>Password reset by email</li>
+    </ul>
+  </section>
+
+  <div class="panel-foot">
+    <p class="muted">Sessions expire automatically. Always log out on shared computers.</p>
+    <a class="ghost-btn" href="/" data-sparkle><i class="fas fa-house"></i> Back to website</a>
+  </div>
+
+</main>
+
+<script src="/js/admin-sparkle.js" defer></script>
+<script src="/js/admin-dashboard.js" defer></script>
+</body>
+</html>
