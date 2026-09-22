@@ -25,7 +25,7 @@ async function makeSession(email, secret, maxAgeSeconds) {
 }
 async function readSession(request, secret) {
   const cookie = request.headers.get("Cookie") || "";
-  const match = cookie.match(/(?:^|;\s*)gfamily_session=([^;]+)/);
+  const match = cookie.match(/(?:^|;\s*)lfclinic_session=([^;]+)/);
   if (!match) return null;
   const [payload, sig] = match[1].split(".");
   if (!payload || !sig) return null;
@@ -58,7 +58,7 @@ async function verifyPassword(password, stored) {
   return diff===0;
 }
 function cookie(value,maxAge) {
-  return `gfamily_session=${value}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
+  return `lfclinic_session=${value}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
 }
 
 export async function onRequest(context) {
