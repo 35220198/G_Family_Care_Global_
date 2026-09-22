@@ -1,4 +1,4 @@
-/* G.Family Care — administrator login */
+/* L&F Medical Clinic — administrator login */
 document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var submit = document.getElementById('submit');
   var toggle = document.getElementById('show');
 
-  var STORE_KEY = 'gfamily_remember_email';
+  var STORE_KEY = 'lfclinic_remember_email';
 
   /* ---- restore a remembered email ---- */
   try {
