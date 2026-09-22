@@ -2,7 +2,7 @@
   "name": "gfamilycare",
   "private": true,
   "version": "2.0.0",
-  "description": "G.Family Home Care Services \u2014 Cloudflare Pages HTML/CSS/JS site with Pages Function admin authentication",
+  "description": "L&F Medical Clinic \u2014 Cloudflare Pages HTML/CSS/JS site with Pages Function admin authentication",
   "scripts": {
     "dev": "wrangler pages dev .",
     "deploy": "wrangler pages deploy ."
