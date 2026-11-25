@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>L&amp;F Medical Clinic — Password Reset</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b2c59">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css?v=2">
+</head>
+<body class="admin-shell login-shell">
+
+<main class="glass login-card" style="width:min(100%,560px)">
+  <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to login</a>
+
+  <div class="login-logo">
+    <img src="../images/logo.png" alt="L&amp;F Medical Clinic logo" width="640" height="250">
+  </div>
+
+  <div class="login-brand">
+    <h1>Reset your password</h1>
+    <p>L&amp;F Medical Clinic &middot; Administrator</p>
+    <div class="brand-rule"></div>
+  </div>
+
+  <div class="notice">
+    <i class="fas fa-circle-info"></i>
+    <p><strong>This site is static (GitHub Pages), so there is no email reset.</strong>
+       The administrator password is a SHA-256 hash stored in <code>js/admin-auth.js</code>.
+       Change it by replacing that hash — the password itself is never stored anywhere.</p>
+  </div>
+
+  <ol class="steps">
+    <li>Open <code>js/admin-auth.js</code> in your GitHub repository.</li>
+    <li>Find the line <code>passwordHash: '…'</code>.</li>
+    <li>Generate a new hash with the local tool below (or any SHA-256 tool).</li>
+    <li>Paste the new 64-character hash in place of the old one and commit.</li>
+    <li>GitHub Pages redeploys in about a minute — sign in with the new password.</li>
+  </ol>
+
+  <div class="divider"></div>
+
+  <h3 style="margin:0 0 10px;font-size:.9rem;font-weight:700;color:#fff">Generate a new hash (runs in your browser)</h3>
+  <label class="form-group" for="newpass">
+    <span>New password (min 12 characters)</span>
+    <div class="password-wrap">
+      <input id="newpass" type="password" autocomplete="new-password" placeholder="Choose a strong password">
+      <button type="button" id="show" class="show-password" aria-label="Show password"><i class="fas fa-eye"></i></button>
+    </div>
+  </label>
+  <button class="primary-btn" type="button" id="gen"><i class="fas fa-key"></i> Generate SHA-256 hash</button>
+  <label class="form-group" for="hashout" style="margin-top:16px">
+    <span>Hash — copy this into js/admin-auth.js</span>
+    <textarea id="hashout" readonly placeholder="Your hash will appear here"></textarea>
+  </label>
+  <p id="gen-status" class="status" role="status" aria-live="polite"></p>
+
+  <div class="divider"></div>
+
+  <div class="panel-foot" style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="ghost-btn" href="index.html"><i class="fas fa-right-to-bracket"></i> Go to login</a>
+    <a class="ghost-btn" href="../index.html"><i class="fas fa-house"></i> Back to website</a>
+  </div>
+</main>
+
+<script src="../js/admin-auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  var pass = document.getElementById('newpass');
+  var out = document.getElementById('hashout');
+  var status = document.getElementById('gen-status');
+  var toggle = document.getElementById('show');
+
+  toggle.addEventListener('click', function () {
+    var hidden = pass.type === 'password';
+    pass.type = hidden ? 'text' : 'password';
+    toggle.innerHTML = hidden ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+  });
+
+  document.getElementById('gen').addEventListener('click', function () {
+    var v = pass.value;
+    if (v.length < 12) {
+      status.textContent = 'Password must be at least 12 characters.';
+      status.className = 'status error';
+      return;
+    }
+    status.textContent = 'Generating…';
+    status.className = 'status';
+    window.GFAuth.sha256Hex(v).then(function (hash) {
+      out.value = hash;
+      out.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      status.textContent = 'Hash generated and copied to your clipboard.';
+      status.className = 'status success';
+    }).catch(function (err) {
+      status.textContent = err.message || 'Could not generate the hash.';
+      status.className = 'status error';
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /tools/
+Disallow: /js/admin-auth.js
+
+Sitemap: https://www.gfamilycare.com/sitemap.xml

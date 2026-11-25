@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>L&amp;F Medical Clinic — Administrator Login</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b2c59">
+<link rel="icon" type="image/png" href="../images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css?v=2">
+</head>
+<body class="admin-shell login-shell">
+
+<main class="glass login-card">
+  <a href="../index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to website</a>
+
+  <div class="login-logo">
+    <img src="../images/logo.png" alt="L&amp;F Medical Clinic logo" width="640" height="250">
+  </div>
+
+  <div class="login-brand">
+    <h1>Administrator Login</h1>
+    <p>L&amp;F Medical Clinic &middot; Secure area</p>
+    <div class="brand-rule"></div>
+  </div>
+
+  <form id="login" novalidate>
+    <label class="form-group" for="email">
+      <span>Company email</span>
+      <input id="email" name="email" type="email" autocomplete="username"
+             required placeholder="info@gfamilycare.com">
+    </label>
+
+    <label class="form-group" for="password">
+      <span>Password</span>
+      <div class="password-wrap">
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="button" id="show" class="show-password" aria-label="Show password">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+    </label>
+
+    <div class="form-row">
+      <label class="remember">
+        <input type="checkbox" id="remember" name="remember">
+        <span class="box"><i class="fas fa-check"></i></span>
+        <span>Remember me</span>
+      </label>
+      <a href="reset.html" class="inline-link">Forgot password?</a>
+    </div>
+
+    <button class="primary-btn" type="submit" id="submit">
+      Sign in <i class="fas fa-arrow-right"></i>
+    </button>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </form>
+</main>
+
+<script src="../js/admin-auth.js"></script>
+<script src="../js/admin-login.js"></script>
+</body>
+</html>
