@@ -537,32 +537,88 @@ document.addEventListener('DOMContentLoaded', function () {
     toast('All website sections saved & synced!');
   });
 
-  var serviceList = document.getElementById('service-list');
-  function renderServices() {
-    if (!serviceList) return;
-    serviceList.innerHTML = '';
-    services.forEach(function (s, idx) {
-      var row = document.createElement('div');
-      row.className = 'service-item';
-      row.innerHTML =
-        '<div class="svc-photo-wrap"><img src="' + escapeHtml(s.img) + '" alt="' + escapeHtml(s.name) + '" loading="lazy"></div>' +
-        '<div class="si-body">' +
-          '<strong>' + escapeHtml(s.name) + '</strong>' +
-          '<span>' + escapeHtml(s.desc) + '</span>' +
-          '<label style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:.75rem;font-weight:600;color:#334155;cursor:pointer">' +
-            '<i class="fas fa-upload"></i> Replace Photo <input type="file" accept="image/jpeg,image/png,image/webp" data-svc-upload="' + idx + '" style="display:none">' +
-          '</label>' +
-        '</div>' +
-        '<div class="si-actions">' +
+  var serviceGrid = document.getElementById('service-cards-5-grid');
+  var heroServiceGrid = document.getElementById('hero-all-5-services-grid');
+
+  function buildServiceEditorCard(s, idx, compact) {
+    var whiteFrame = s.whiteFrame !== false;
+    var zoomFit = s.zoomFit !== false;
+    var provisions = Array.isArray(s.provisions) ? s.provisions : [];
+
+    var bulletsHtml = provisions.map(function (bText, bIdx) {
+      return '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">' +
+        '<input type="text" maxlength="140" data-svc-bullet-idx="' + idx + '" data-bullet-i="' + bIdx + '" value="' + escapeHtml(bText) + '" style="flex:1">' +
+        '<button class="icon-btn danger" type="button" data-bullet-del-svc="' + idx + '" data-bullet-del-i="' + bIdx + '" title="Remove item"><i class="fas fa-times"></i></button>' +
+      '</div>';
+    }).join('');
+
+    return '<div class="editor-card" data-service-editor="' + idx + '" style="background:#FFFFFF;border:1px solid #e2e8f0;border-radius:14px;padding:16px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">' +
+        '<strong style="font-size:.95rem;color:#0b2c59">#' + (idx + 1) + ' ' + escapeHtml(s.name) + '</strong>' +
+        '<div style="display:flex;gap:6px;align-items:center">' +
           '<span class="pill ' + (s.visible !== false ? 'ok' : 'off') + '"><span class="dot"></span>' + (s.visible !== false ? 'Visible' : 'Hidden') + '</span>' +
-          '<button class="icon-btn" type="button" data-act="up" data-idx="' + idx + '" title="Move up"><i class="fas fa-arrow-up"></i></button>' +
-          '<button class="icon-btn" type="button" data-act="down" data-idx="' + idx + '" title="Move down"><i class="fas fa-arrow-down"></i></button>' +
           '<button class="icon-btn" type="button" data-act="toggle" data-idx="' + idx + '" title="Toggle visibility"><i class="fas fa-eye' + (s.visible !== false ? '-slash' : '') + '"></i></button>' +
-          '<button class="icon-btn" type="button" data-act="edit" data-idx="' + idx + '" title="Edit service"><i class="fas fa-pen"></i></button>' +
-          '<button class="icon-btn danger" type="button" data-act="del" data-idx="' + idx + '" title="Delete service"><i class="fas fa-trash"></i></button>' +
-        '</div>';
-      serviceList.appendChild(row);
-    });
+        '</div>' +
+      '</div>' +
+
+      '<div class="media-preview-box" style="background:' + (whiteFrame ? '#FFFFFF' : '#f8fafc') + ';border:1px solid #e2e8f0;border-radius:10px;padding:8px;margin-bottom:10px;display:flex;align-items:center;gap:12px">' +
+        '<div class="media-thumb" style="width:96px;height:84px;border-radius:8px;overflow:hidden;background:' + (whiteFrame ? '#FFFFFF' : 'transparent') + ';padding:' + (whiteFrame ? '4px' : '0') + ';flex-shrink:0">' +
+          '<img src="' + escapeHtml(s.img) + '" alt="' + escapeHtml(s.name) + '" style="width:100%;height:100%;object-fit:' + (zoomFit ? 'cover' : 'contain') + ';object-position:center top;border-radius:6px">' +
+        '</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<label class="btn-sm ghost" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:6px">' +
+            '<i class="fas fa-upload"></i> Upload Photo' +
+            '<input type="file" accept="image/jpeg,image/png,image/webp" data-svc-upload="' + idx + '" style="display:none">' +
+          '</label>' +
+          '<p class="field-hint" style="color:#6B7280;font-size:.72rem;line-height:1.35;margin:0">' + SERVICE_HELPER_TEXT + '</p>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px">' +
+        '<label style="display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;cursor:pointer">' +
+          '<input type="checkbox" data-svc-whiteframe="' + idx + '"' + (whiteFrame ? ' checked' : '') + '> Solid white (#FFFFFF) frame' +
+        '</label>' +
+        '<label style="display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;cursor:pointer">' +
+          '<input type="checkbox" data-svc-zoomfit="' + idx + '"' + (zoomFit ? ' checked' : '') + '> Zoom-to-fit (object-fit: cover)' +
+        '</label>' +
+      '</div>' +
+
+      '<label class="form-group">' +
+        '<span>Service Title</span>' +
+        '<input type="text" maxlength="60" data-svc-title="' + idx + '" value="' + escapeHtml(s.name) + '">' +
+        '<span class="field-hint">Max 60 characters</span>' +
+      '</label>' +
+
+      '<label class="form-group">' +
+        '<span>Full Description</span>' +
+        '<textarea maxlength="360" data-svc-desc="' + idx + '">' + escapeHtml(s.desc) + '</textarea>' +
+        '<span class="field-hint">Max 360 characters</span>' +
+      '</label>' +
+
+      (compact ? '' :
+        '<div class="form-group">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+            '<span>What We Provide (Bullet Items)</span>' +
+            '<button class="btn-sm ghost" type="button" data-bullet-add-svc="' + idx + '" style="padding:4px 10px;font-size:.75rem"><i class="fas fa-plus"></i> Add Item</button>' +
+          '</div>' +
+          '<div>' + bulletsHtml + '</div>' +
+        '</div>'
+      ) +
+    '</div>';
+  }
+
+  function renderServices() {
+    if (serviceGrid) {
+      serviceGrid.innerHTML = services.map(function (s, idx) {
+        return buildServiceEditorCard(s, idx, false);
+      }).join('');
+    }
+    if (heroServiceGrid) {
+      heroServiceGrid.innerHTML = services.map(function (s, idx) {
+        return buildServiceEditorCard(s, idx, true);
+      }).join('');
+    }
+    renderStats();
   }
 
   document.getElementById('add-service-btn')?.addEventListener('click', function () {
@@ -574,100 +630,110 @@ document.addEventListener('DOMContentLoaded', function () {
       name: name.trim(),
       desc: desc.trim(),
       img: '../images/service-medical-care.jpg',
+      provisions: ['Personalised care assessment', 'Ongoing family & clinical communication'],
+      whiteFrame: true,
+      zoomFit: true,
       visible: true
     });
     save(KEYS.services, services);
     renderServices();
-    renderStats();
     toast('Service added');
   });
 
-  serviceList?.addEventListener('click', function (ev) {
-    var btn = ev.target.closest('button[data-act]');
-    if (!btn) return;
-    var idx = Number(btn.getAttribute('data-idx'));
-    var act = btn.getAttribute('data-act');
-    if (act === 'toggle') {
-      services[idx].visible = services[idx].visible === false ? true : false;
-      save(KEYS.services, services);
-      renderServices();
-      renderStats();
-      toast(services[idx].name + (services[idx].visible ? ' is visible' : ' is hidden'));
-    } else if (act === 'edit') {
-      var name = window.prompt('Service name', services[idx].name);
-      if (name === null) return;
-      var desc = window.prompt('Short description', services[idx].desc);
-      if (desc === null) return;
-      services[idx].name = name.trim() || services[idx].name;
-      services[idx].desc = desc.trim() || services[idx].desc;
-      save(KEYS.services, services);
-      renderServices();
-      toast('Service updated');
-    } else if (act === 'up' && idx > 0) {
-      var tmpUp = services[idx - 1];
-      services[idx - 1] = services[idx];
-      services[idx] = tmpUp;
-      save(KEYS.services, services);
-      renderServices();
-    } else if (act === 'down' && idx < services.length - 1) {
-      var tmpDn = services[idx + 1];
-      services[idx + 1] = services[idx];
-      services[idx] = tmpDn;
-      save(KEYS.services, services);
-      renderServices();
-    } else if (act === 'del') {
-      if (!window.confirm('Remove this service?')) return;
-      services.splice(idx, 1);
-      save(KEYS.services, services);
-      renderServices();
-      renderStats();
-      toast('Service removed');
-    }
-  });
+  function bindServiceContainerEvents(container) {
+    if (!container) return;
 
-serviceList?.addEventListener('input', function (ev) {
-    var titleInp = ev.target.closest('input[data-svc-title]');
-    var descTa = ev.target.closest('textarea[data-svc-desc]');
-    var provTa = ev.target.closest('textarea[data-svc-provisions]');
-    if (titleInp) {
-      services[Number(titleInp.getAttribute('data-svc-title'))].name = titleInp.value;
-    } else if (descTa) {
-      services[Number(descTa.getAttribute('data-svc-desc'))].desc = descTa.value;
-    } else if (provTa) {
-      services[Number(provTa.getAttribute('data-svc-provisions'))].provisions = provTa.value
-        .split(/\r?\n/)
-        .map(function (line) { return line.trim(); })
-        .filter(Boolean);
-    }
-  });
+    container.addEventListener('input', function (ev) {
+      var titleInp = ev.target.closest('input[data-svc-title]');
+      var descTa = ev.target.closest('textarea[data-svc-desc]');
+      var bInp = ev.target.closest('input[data-svc-bullet-idx]');
 
-  serviceList?.addEventListener('change', function (ev) {
-    var wfChk = ev.target.closest('input[data-svc-whiteframe]');
-    var zfChk = ev.target.closest('input[data-svc-zoomfit]');
-    if (wfChk) {
-      services[Number(wfChk.getAttribute('data-svc-whiteframe'))].whiteFrame = wfChk.checked;
-      renderServices();
-      return;
-    }
-    if (zfChk) {
-      services[Number(zfChk.getAttribute('data-svc-zoomfit'))].zoomFit = zfChk.checked;
-      renderServices();
-      return;
-    }
-  });
-
-  serviceList?.addEventListener('change', function (ev) {
-    var inp = ev.target.closest('input[data-svc-upload]');
-    if (!inp || !inp.files[0]) return;
-    var idx = Number(inp.getAttribute('data-svc-upload'));
-    readFileAsDataUrl(inp.files[0], 2, function (url) {
-      services[idx].img = url;
-      save(KEYS.services, services);
-      renderServices();
-      applyMediaPreviews();
-      toast('Service photo updated');
+      if (titleInp) {
+        services[Number(titleInp.getAttribute('data-svc-title'))].name = titleInp.value;
+      } else if (descTa) {
+        services[Number(descTa.getAttribute('data-svc-desc'))].desc = descTa.value;
+      } else if (bInp) {
+        var sIdx = Number(bInp.getAttribute('data-svc-bullet-idx'));
+        var bIdx = Number(bInp.getAttribute('data-bullet-i'));
+        if (!Array.isArray(services[sIdx].provisions)) services[sIdx].provisions = [];
+        services[sIdx].provisions[bIdx] = bInp.value;
+      }
     });
-  });
+
+    container.addEventListener('change', function (ev) {
+      var wfChk = ev.target.closest('input[data-svc-whiteframe]');
+      var zfChk = ev.target.closest('input[data-svc-zoomfit]');
+      var upInp = ev.target.closest('input[data-svc-upload]');
+
+      if (wfChk) {
+        var idx1 = Number(wfChk.getAttribute('data-svc-whiteframe'));
+        services[idx1].whiteFrame = wfChk.checked;
+        if (services[idx1].id === 'medical') site.medicalCareWhiteFrame = wfChk.checked;
+        save(KEYS.services, services);
+        renderServices();
+        applyMediaPreviews();
+        return;
+      }
+      if (zfChk) {
+        var idx2 = Number(zfChk.getAttribute('data-svc-zoomfit'));
+        services[idx2].zoomFit = zfChk.checked;
+        if (services[idx2].id === 'medical') site.medicalCareZoomFit = zfChk.checked;
+        save(KEYS.services, services);
+        renderServices();
+        applyMediaPreviews();
+        return;
+      }
+      if (upInp && upInp.files && upInp.files[0]) {
+        var idx3 = Number(upInp.getAttribute('data-svc-upload'));
+        readFileAsDataUrl(upInp.files[0], 2, function (url) {
+          services[idx3].img = url;
+          save(KEYS.services, services);
+          renderServices();
+          applyMediaPreviews();
+          toast(services[idx3].name + ' photo updated & saved!');
+        });
+      }
+    });
+
+    container.addEventListener('click', function (ev) {
+      var actBtn = ev.target.closest('button[data-act]');
+      if (actBtn) {
+        var idx = Number(actBtn.getAttribute('data-idx'));
+        var act = actBtn.getAttribute('data-act');
+        if (act === 'toggle') {
+          services[idx].visible = services[idx].visible === false ? true : false;
+          save(KEYS.services, services);
+          renderServices();
+          toast(services[idx].name + (services[idx].visible ? ' is visible' : ' is hidden'));
+        }
+        return;
+      }
+
+      var addBullet = ev.target.closest('button[data-bullet-add-svc]');
+      if (addBullet) {
+        var sIdx = Number(addBullet.getAttribute('data-bullet-add-svc'));
+        if (!Array.isArray(services[sIdx].provisions)) services[sIdx].provisions = [];
+        services[sIdx].provisions.push('New care provision item');
+        save(KEYS.services, services);
+        renderServices();
+        return;
+      }
+
+      var delBullet = ev.target.closest('button[data-bullet-del-svc]');
+      if (delBullet) {
+        var sIdx2 = Number(delBullet.getAttribute('data-bullet-del-svc'));
+        var bIdx2 = Number(delBullet.getAttribute('data-bullet-del-i'));
+        if (Array.isArray(services[sIdx2].provisions)) {
+          services[sIdx2].provisions.splice(bIdx2, 1);
+        }
+        save(KEYS.services, services);
+        renderServices();
+      }
+    });
+  }
+
+  bindServiceContainerEvents(serviceGrid);
+  bindServiceContainerEvents(heroServiceGrid);
 
   var clinicInfo = document.getElementById('clinic-info');
   function renderClinic() {
@@ -929,7 +995,7 @@ serviceList?.addEventListener('input', function (ev) {
       try {
         var d = JSON.parse(String(r.result || '{}'));
         if (d.site) { site = Object.assign({}, DEFAULT_SITE, d.site); save(KEYS.site, site); }
-        if (Array.isArray(d.services)) { services = d.services; save(KEYS.services, services); }
+        if (Array.isArray(d.services)) { services = d.services.map(ensureServiceShape); save(KEYS.services, services); }
         if (d.clinic) { clinic = Object.assign({}, DEFAULT_CLINIC, d.clinic); save(KEYS.clinic, clinic); }
         if (Array.isArray(d.faqs)) { faqs = d.faqs; save(KEYS.faqs, faqs); }
         if (Array.isArray(d.leads)) { leads = d.leads; save(KEYS.leads, leads); }
@@ -969,34 +1035,3 @@ serviceList?.addEventListener('input', function (ev) {
   renderBanner();
   renderPosts();
 });
-
-serviceList?.addEventListener('input', function (ev) {
-    var bInp = ev.target.closest('input[data-svc-bullet-idx]');
-    if (bInp) {
-      var sIdx = Number(bInp.getAttribute('data-svc-bullet-idx'));
-      var bIdx = Number(bInp.getAttribute('data-bullet-i'));
-      if (!Array.isArray(services[sIdx].provisions)) services[sIdx].provisions = [];
-      services[sIdx].provisions[bIdx] = bInp.value;
-    }
-  });
-
-  serviceList?.addEventListener('click', function (ev) {
-    var addBtn = ev.target.closest('button[data-bullet-add-svc]');
-    if (addBtn) {
-      var sIdx = Number(addBtn.getAttribute('data-bullet-add-svc'));
-      if (!Array.isArray(services[sIdx].provisions)) services[sIdx].provisions = [];
-      services[sIdx].provisions.push('New care provision item');
-      renderServices();
-      return;
-    }
-    var delBtn = ev.target.closest('button[data-bullet-del-svc]');
-    if (delBtn) {
-      var sIdx2 = Number(delBtn.getAttribute('data-bullet-del-svc'));
-      var bIdx2 = Number(delBtn.getAttribute('data-bullet-del-i'));
-      if (Array.isArray(services[sIdx2].provisions)) {
-        services[sIdx2].provisions.splice(bIdx2, 1);
-      }
-      renderServices();
-      return;
-    }
-  });
