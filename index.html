@@ -1016,6 +1016,79 @@ section{position:relative;z-index:1}
   #gf-announcement.hidden{display:none}
   #gf-announcement a{color:#c9e6a8;text-decoration:underline;font-weight:700}
 </style>
+<style id="primary-care-provider-beam">
+  /* Rotating Border Beam + Sweeping Top Bar on the Primary Care Provider Card */
+  @keyframes lfProviderBorderBeamSpin {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes lfProviderTopSweep {
+    0% {
+      transform: translateX(-115%);
+    }
+    50% {
+      transform: translateX(115%);
+    }
+    100% {
+      transform: translateX(-115%);
+    }
+  }
+
+  .primary-care-beam-card {
+    position: relative;
+    overflow: hidden;
+    border: 2.5px solid transparent;
+    background-image:
+      linear-gradient(145deg, #047857 0%, #065f46 62%, #064e3b 100%),
+      linear-gradient(125deg, #34d399 0%, #f59e0b 32%, #1e3a8a 65%, #10b981 100%);
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    background-size: 100% 100%, 260% 260%;
+    animation: lfProviderBorderBeamSpin 6.5s ease-in-out infinite;
+    box-shadow: 0 24px 55px rgba(2, 44, 34, 0.26), 0 0 0 1px rgba(16, 185, 129, 0.25);
+  }
+
+  .primary-care-beam-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 58%;
+    height: 4px;
+    z-index: 25;
+    pointer-events: none;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #34d399 0%, #fbbf24 50%, #38bdf8 85%, #10b981 100%);
+    box-shadow: 0 2px 14px rgba(251, 191, 36, 0.55);
+    animation: lfProviderTopSweep 4.8s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .primary-care-beam-card:hover {
+    animation-duration: 2.5s;
+  }
+
+  .primary-care-beam-card:hover::before {
+    animation-duration: 1.8s;
+    height: 5px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .primary-care-beam-card,
+    .primary-care-beam-card::before {
+      animation: none;
+      transform: none;
+    }
+  }
+</style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -1107,7 +1180,7 @@ section{position:relative;z-index:1}
 </div>
 </div>
 <div class="md:col-span-5 relative">
-<div class="bg-emerald-700 rounded-3xl p-8 text-white shadow-2xl interactive-card reveal relative overflow-hidden">
+<div class="bg-emerald-700 rounded-3xl p-8 text-white shadow-2xl interactive-card reveal relative overflow-hidden primary-care-beam-card">
 <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl">
 <i class="fas fa-user-nurse"></i>
 </div>
